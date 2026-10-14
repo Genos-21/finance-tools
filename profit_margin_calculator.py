@@ -1,5 +1,5 @@
 
-# Financial Beast - Profit Margin Calculator v2
+# Financial Beast - Profit Margin Calculator v3
 
 def get_amount(label):
     while True:
@@ -16,7 +16,22 @@ def get_amount(label):
             print("Invalid input. Please enter a number.")
 
 
-print("\n===== PROFIT MARGIN CALCULATOR =====")
+def get_percentage(label):
+    while True:
+        try:
+            percentage = float(input(label))
+
+            if 0 <= percentage <= 100:
+                return percentage
+
+            print("Enter a percentage between 0 and 100.")
+
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+
+print("\n===== FINANCIAL BEAST =====")
+print("===== PROFIT MARGIN CALCULATOR v3 =====")
 
 # 1. Revenue
 revenue = get_amount("\nEnter total revenue")
@@ -51,24 +66,34 @@ total_indirect_costs = (
     + other_indirect_costs
 )
 
-# 4. Total cost
+# 4. Total costs and profit before tax
 total_cost = total_direct_costs + total_indirect_costs
 
-# 5. Profit
-profit = revenue - total_cost
+profit_before_tax = revenue - total_cost
 
-# 6. Profit margin and markup
+# 5. Calculate tax on positive PBT
+print("\n--- TAX CALCULATION ---")
+tax_rate = get_percentage("Enter tax rate (%): ")
+
+tax_amount = max(profit_before_tax, 0) * (tax_rate / 100)
+
+# 6. Profit after tax
+profit_after_tax = profit_before_tax - tax_amount
+
+# 7. Profit margins and markup
 if revenue > 0:
-    profit_margin = (profit / revenue) * 100
+    pbt_margin = (profit_before_tax / revenue) * 100
+    pat_margin = (profit_after_tax / revenue) * 100
 else:
-    profit_margin = None
+    pbt_margin = None
+    pat_margin = None
 
 if total_cost > 0:
-    markup = (profit / total_cost) * 100
+    markup = (profit_before_tax / total_cost) * 100
 else:
     markup = None
 
-# 7. Display results
+# 8. Display cost breakdown
 print("\n========== COST BREAKDOWN ==========")
 
 print("\n--- DIRECT COSTS ---")
@@ -85,21 +110,28 @@ print(f"Rent and utilities: ₹{rent_and_utilities:,.2f}")
 print(f"Other indirect costs: ₹{other_indirect_costs:,.2f}")
 print(f"Total indirect costs: ₹{total_indirect_costs:,.2f}")
 
+# 9. Final results
 print("\n========== FINAL RESULTS ==========")
+
 print(f"Revenue: ₹{revenue:,.2f}")
 print(f"Total direct costs: ₹{total_direct_costs:,.2f}")
 print(f"Total indirect costs: ₹{total_indirect_costs:,.2f}")
 print(f"TOTAL COST: ₹{total_cost:,.2f}")
-print(f"PROFIT / LOSS: ₹{profit:,.2f}")
 
-if profit_margin is not None:
-    print(f"Profit margin: {profit_margin:.2f}%")
+print(f"\nPROFIT BEFORE TAX (PBT): ₹{profit_before_tax:,.2f}")
+print(f"Tax rate entered: {tax_rate:.2f}%")
+print(f"Estimated tax on PBT: ₹{tax_amount:,.2f}")
+print(f"PROFIT AFTER TAX (PAT): ₹{profit_after_tax:,.2f}")
+
+if pbt_margin is not None:
+    print(f"\nPBT Margin: {pbt_margin:.2f}%")
+    print(f"PAT Margin: {pat_margin:.2f}%")
 else:
-    print("Profit margin: Cannot calculate because revenue is zero.")
+    print("\nMargins cannot be calculated because revenue is zero.")
 
 if markup is not None:
-    print(f"Markup on total cost: {markup:.2f}%")
+    print(f"Markup on total cost (before tax): {markup:.2f}%")
 else:
-    print("Markup: Cannot calculate because total cost is zero.")
+    print("Markup cannot be calculated because total cost is zero.")
 
 print("\n===== END OF REPORT =====")
