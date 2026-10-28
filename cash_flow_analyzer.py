@@ -37,7 +37,9 @@ def get_signed_amount(label):
             print("Invalid input. Enter a number, such as -5000.")
 
 def money(amount):
-    return f"₹{amount:,.2f}"
+    if amount < 0:
+        return f"-₹{abs(amount):,.2f}"
+    return f"₹{amount:,.2f}""
 
 print("=" * 55)
 print("FINANCIAL BEAST - CASH FLOW ANALYZER")
